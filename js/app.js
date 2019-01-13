@@ -1,36 +1,23 @@
 const game = {
     wins: 0,
-    collisions: 0
+    collisions: 0,
+    startDate: new Date()
 }
 
-const globalConst = {
-    xOffset: 101,
-    yOffset: 83,
-} 
-
-const playerConst = {
-    height: 83,
-    width: 101,
-    xStart: 202,
-    yStart: 380
-}
-
-const enemyConst = {
-    height: 83,
-    width: 101,
-    xStart: -101
-}
-
-let stop = false;
+const winNode = document.getElementById('wins');
+const collisionsNode = document.getElementById('collisions');
+const timer = document.getElementById("timer");
 
 //Enemy class
 class Enemy {
     constructor(intRow = 1, speed = 1){
-        this.width = enemyConst.width;
-        this.height = enemyConst.height;
+        this.width = 101;
+        this.height = 83;
         this.sprite = 'images/enemy-bug.png';
-        this.x = enemyConst.xStart;
+        this.origX = -101;
+        this.x = this.origX;
         this.speed = speed;
+        this.xOffset = 
         intRow==1 ? this.y = 48 : (intRow==2 ? this.y = 131 : (intRow==3 ? this.y = 214 : false))
     }
 
@@ -41,18 +28,19 @@ class Enemy {
         // which will ensure the game runs at the same speed for
         // all computers.
        
-        if (this.x + globalConst.xOffset <= 606) {
-            this.x += globalConst.xOffset*dt*this.speed;
+        if (this.x + this.width <= 606) {
+            this.x += this.width*dt*this.speed;
         } else {
-            this.x = enemyConst.xStart;
+            this.x = this.origX;
         }   
 
         this.handleCollision();
+        collisionsNode.textContent = `Collisions: ${game.collisions}`;
         
     }
 
     handleCollision(){
-        /*As the picture has some transparent space around it the
+        /*As the picture has some transparent space around it, the
         "gap" is used to as correction parameter to allow collision only
         when enemy and player images really touch each other
         */
@@ -61,7 +49,8 @@ class Enemy {
             this.x < player.x + player.width - gap &&
             player.y < this.y + this.height &&
             this.y < player.y + player.height ) {
-            player.reset();
+                game.collisions += 1;
+                player.reset();
         }
     }
     // Draw the enemy on the screen, required method for game
@@ -74,15 +63,19 @@ class Enemy {
 // Now write your own player class
 class Player {
     constructor(playerImg = 'images/char-boy.png'){
-        this.width = playerConst.width;
-        this.height = playerConst.height;
+        this.width = 101;
+        this.height = 83;
         this.sprite = playerImg;
-        this.x = 202;
-        this.y = 380;
+        this.origX = 202;
+        this.origY = 380;
+        this.x = this.origX;
+        this.y = this.origY;
+        this.xOffset = this.width;
+        
     }
 
     update() {
-
+        winNode.textContent = `Wins: ${game.wins}`
     }
 
     win() {
@@ -95,41 +88,37 @@ class Player {
     }
 
     reset(){
-        this.y = playerConst.yStart;
+        this.y = this.origY;
     }
 
     handleInput(input) {
-        const xOff = globalConst.xOffset;
-        const yOff = globalConst.yOffset;
-        
         //check for key and whether caracter is off canvas
-        if (input == 'left' && this.x - xOff >= 0) {
-            this.x -= xOff;
-        } else if (input == 'right' && this.x + xOff <= 404) {
-            this.x += xOff;
+        if (input == 'left' && this.x - this.width >= 0) {
+            this.x -= this.width;
+        } else if (input == 'right' && this.x + this.width <= 404) {
+            this.x += this.width;
         } else if (input == 'up') {
 
-            if (this.y - yOff >= 48) {
-                this.y -= yOff;
+            if (this.y - this.height >= 48) {
+                this.y -= this.height;
             } else {
                 this.win();
             }
             
-        } else if (input == 'down' && this.y + yOff <= 380) {
-            this.y += yOff;
+        } else if (input == 'down' && this.y + this.height <= 380) {
+            this.y += this.height;
         }
         
     }
 
 }
 
-const enemy1 = new Enemy(1, (Math.random() * 1) + 1);
-const enemy2 = new Enemy(2, (Math.random() * 1) + 1);
+const enemy1 = new Enemy(1, (Math.random() * 2) + 1);
+const enemy2 = new Enemy(2, (Math.random() * 3) + 1);
 const enemy3 = new Enemy(3, (Math.random() * 1) + 1);
 const allEnemies = [enemy1, enemy2, enemy3];
 
 const player = new Player();
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -143,3 +132,16 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+//get playing time formatted in minutes and seconds
+function getPlayTime(startDate,endDate) {
+    let totalSec = Math.round((endDate.getTime() - startDate.getTime())/1000,0);
+    let minutes = parseInt(totalSec/60);
+    let seconds = totalSec % 60;
+    return `Playing time: ${minutes}min ${seconds}sec`
+}
+
+//Interval for playing time
+setInterval(() => {
+    timer.textContent = getPlayTime(game.startDate, new Date());
+},1000);

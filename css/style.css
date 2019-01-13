@@ -1,3 +1,34 @@
 body {
     text-align: center;
 }
+
+#header {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+
+    
+}
+
+#scoring-panel {
+    width: 505px;
+    display: relative;
+
+    display: flex;
+    align-content: center;
+    border: 1px solid #000;
+    
+}
+
+#scoring-panel p {
+    margin-right: 50px;
+}
+
+#scoring-panel p:first-child {
+    margin-left: 10px;
+}
+
+canvas * {
+    position: relative;
+    margin-top: 0px;
+}
