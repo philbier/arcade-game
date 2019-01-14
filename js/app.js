@@ -12,7 +12,6 @@ const timer = document.getElementById('timer');
 const canvas = document.querySelector('canvas');
 const endHeading = document.getElementById("endHeading")
 const endPanel = document.getElementById("endScreen");
-const btnPlayAgain = document.getElementById("btnPlay");
 const endText = document.getElementById("endText");
 const endTime = document.getElementById("endTime");
 
@@ -148,8 +147,11 @@ setInterval(() => {
 function showEndScreen(heading) {
     endPanel.style.display = 'flex';
     endHeading.textContent = `${heading}`;
-    endText.textContent = `You have ${game.wins} wins and ${game.collisions} collisions!`
+    endText.textContent = `You have ${game.wins} wins and ${game.collisions} collisions!
+    
+                            Refresh to play again.`
 }
+
 
 
 /***** Initialization of the Game *****/
