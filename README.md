@@ -9,7 +9,6 @@ In this arcade game the player needs to move his character to the water without 
 - [Authors](#authors)
 - [License](#license)
 
-
 ## Prerequisites
 
 This game works best and was tested in the following browsers: 
@@ -52,9 +51,6 @@ Ultimately a player object has to be created using the *Player* class, which wil
 ```
 const player = new Player();
 ```
-
-
-
 
 ## Authors
 * **Phillip Biermann**
