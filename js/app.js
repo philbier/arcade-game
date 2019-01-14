@@ -1,14 +1,23 @@
 const game = {
     wins: 0,
     collisions: 0,
-    startDate: new Date()
+    playingTime: 30
 }
 
+/*html nodes that represent parts of a scoring panel.
+their textContent-property will be used in order to display game statistics*/
 const winNode = document.getElementById('wins');
 const collisionsNode = document.getElementById('collisions');
-const timer = document.getElementById("timer");
+const timer = document.getElementById('timer');
+const canvas = document.querySelector('canvas');
+const endHeading = document.getElementById("endHeading")
+const endPanel = document.getElementById("endScreen");
+const btnPlayAgain = document.getElementById("btnPlay");
+const endText = document.getElementById("endText");
+const endTime = document.getElementById("endTime");
 
-//Enemy class
+/*Enemy class.
+represents the class for enemy objects that will reset the player when they collide with each other*/
 class Enemy {
     constructor(intRow = 1, speed = 1){
         this.width = 101;
@@ -21,14 +30,12 @@ class Enemy {
         intRow==1 ? this.y = 48 : (intRow==2 ? this.y = 131 : (intRow==3 ? this.y = 214 : false))
     }
 
-    // Update the enemy's position, required method for game
-    // Parameter: dt, a time delta between ticks
+    /* Update the enemy's position, required method for game.
+    dt-parameter needs to be multplied with any movement in
+    order to ensure the game runs at same speed for all computers*/
     update(dt) {
-        // You should multiply any movement by the dt parameter
-        // which will ensure the game runs at the same speed for
-        // all computers.
-       
-        if (this.x + this.width <= 606) {
+        /*  */
+        if (this.x + this.width <= canvas.width) {
             this.x += this.width*dt*this.speed;
         } else {
             this.x = this.origX;
@@ -60,7 +67,7 @@ class Enemy {
 
 }
 
-// Now write your own player class
+// Player Class
 class Player {
     constructor(playerImg = 'images/char-boy.png'){
         this.width = 101;
@@ -70,8 +77,7 @@ class Player {
         this.origY = 380;
         this.x = this.origX;
         this.y = this.origY;
-        this.xOffset = this.width;
-        
+        this.xOffset = this.width; 
     }
 
     update() {
@@ -98,13 +104,11 @@ class Player {
         } else if (input == 'right' && this.x + this.width <= 404) {
             this.x += this.width;
         } else if (input == 'up') {
-
             if (this.y - this.height >= 48) {
                 this.y -= this.height;
             } else {
                 this.win();
-            }
-            
+            }   
         } else if (input == 'down' && this.y + this.height <= 380) {
             this.y += this.height;
         }
@@ -113,15 +117,7 @@ class Player {
 
 }
 
-const enemy1 = new Enemy(1, (Math.random() * 2) + 1);
-const enemy2 = new Enemy(2, (Math.random() * 3) + 1);
-const enemy3 = new Enemy(3, (Math.random() * 1) + 1);
-const allEnemies = [enemy1, enemy2, enemy3];
-
-const player = new Player();
-
 // This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
@@ -135,13 +131,31 @@ document.addEventListener('keyup', function(e) {
 
 //get playing time formatted in minutes and seconds
 function getPlayTime(startDate,endDate) {
-    let totalSec = Math.round((endDate.getTime() - startDate.getTime())/1000,0);
-    let minutes = parseInt(totalSec/60);
-    let seconds = totalSec % 60;
-    return `Playing time: ${minutes}min ${seconds}sec`
+    game.playingTime = game.playingTime - 1; 
+    return `Remaining time: ${game.playingTime}sec`
 }
 
 //Interval for playing time
 setInterval(() => {
-    timer.textContent = getPlayTime(game.startDate, new Date());
+    if (game.playingTime > 0) {
+        timer.textContent = getPlayTime(game.startDate, new Date());
+    } else {
+        showEndScreen('Congratulations');
+    }
 },1000);
+
+//shows a winning panel with game statistics
+function showEndScreen(heading) {
+    endPanel.style.display = 'flex';
+    endHeading.textContent = `${heading}`;
+    endText.textContent = `You have ${game.wins} wins and ${game.collisions} collisions!`
+}
+
+
+/***** Initialization of the Game *****/
+const enemy1 = new Enemy(1, (Math.random() * 2) + 1);
+const enemy2 = new Enemy(2, (Math.random() * 3) + 1);
+const enemy3 = new Enemy(3, (Math.random() * 1) + 1);
+const allEnemies = [enemy1, enemy2, enemy3];
+
+const player = new Player();
