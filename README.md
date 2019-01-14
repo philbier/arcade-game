@@ -7,7 +7,7 @@ In this arcade game the player needs to move his character to the water without 
 - [Prerequisites](#prerequisites)
 - [Instructions](#instructions)
 - [Authors](#authors)
-- [License](#icense)
+- [License](#license)
 
 
 ## Prerequisites
@@ -46,14 +46,14 @@ const enemy3 = new Enemy(3, (Math.random() * 1) + 1);
 
 const allEnemies = [enemy1, enemy2, enemy3];
 ```
-*Enemy* represents a class with two paramaters. The first one is the line the enemy shall be running in, the second parameter is the speed (currently set to a random number). **IMPORTANT:** All enemy objects must be collected in the array *allEnemies* in order for the engine to run properly.
+*Enemy* represents a class with two paramaters. The first one represents the line the enemy shall be running in, the second parameter is the speed (currently set to a random number). **IMPORTANT:** All enemy objects must be collected in the array *allEnemies* in order for the engine to run properly.
 
-Ultimately a player has to be created, which will start the game. 
+Ultimately a player object has to be created using the *Player* class, which will start the game. This line of code should **not** be changed.
 ```
 const player = new Player();
 ```
 
-This line of code should **not** be changed.
+
 
 
 ## Authors
